@@ -1,0 +1,63 @@
+body{
+    background-color: #f6f6f6;
+}
+
+.button {
+    background-color: #000000;
+    border: none;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+}
+
+
+textarea {
+    margin: 25px;
+    padding: 4px 12px;
+
+}
+
+.red {
+    background-color: #ffdddd;
+    border-left: 6px solid #f44336;
+}.green {
+    background-color: #ddffdd;
+    border-left: 6px solid #4CAF50;
+}.blue {
+    background-color: #e7f3fe;
+    border-left: 6px solid #2196F3;
+}.yellow {
+    background-color: #ffffcc;
+    border-left: 6px solid #ffeb3b;
+}
+
+
+
+.note_container {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    margin: 25px;
+}.note_container_buttons{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    margin: 25px;
+}
+
+
+input[type="text"] {
+    width: 250px;
+    height: 25px;
+    margin: 25px;
+}
+
+select{
+    height: 25px;
+    margin: 25px;
+}

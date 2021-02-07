@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Abhishek</title>
+
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+</head>
+<body>
+    <h1 id="user_title">Loading Stuff...</h1>
+    <a href='/index.html' class="button">Go To Home</a>
+    <a href='/NewNote.html' class="button">Create New Note</a>
+    <hr>
+
+
+    <div id="notes_data"></div>
+
+</body>
+
+
+<script>
+    var url = new URL(window.location.href);
+    var username = url.searchParams.get('username');
+
+
+    function setTitle(num){
+        document.getElementById('user_title').innerHTML = 
+        `Found ${num} notes written by :-) ${username}`;
+    }
+
+    function AddNote(data){
+        console.log(data);
+        document.getElementById('notes_data').innerHTML += 
+            `<div class="note_container">
+                <textarea class="${data['color']}" cols="80" rows="10" readonly="">`+
+                    `Title: ${data['title']}\n` + 
+                    `Written On: ${data['date']}\n\n` +
+                    
+                    `${data['text']}\n`+
+                `</textarea>
+                
+                <div class="note_container_buttons">
+                    <input type="button" value="Edit" class="button" onclick="Edit('${data['note_id']}')">
+                    <input type="button" value="Delete" class="button" onclick="Delete('${data['note_id']}')">
+                </div>
+            </div>
+            <hr>
+        `;
+    }
+
+    
+
+    function Edit(note_id){
+        window.location.href = `/Edit.html?note_id=${note_id}&username=${username}`;
+    }function Delete(note_id){
+        if(confirm('Are you sure...')){
+
+            $.get(`/api/delete/${note_id}`, function(data, status){
+                window.location.href = window.location.href;
+            });
+        }
+    }
+
+    $.get('/api/notes/'+username, function(data, status){
+        console.log('Length: '+ data.length);
+        console.table(data);
+
+
+        setTitle(data.length);
+        data.forEach(function(x,i){AddNote(x);});
+    });
+
+
+</script>
+</html>

@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>New Note</title>
+    
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <h2>Create a New Note</h2>
+
+    Username: <input type="text" id="username">
+    <br>
+    Title:<input type="text" id="title">
+
+    <br>
+    <textarea class="red" name="text" id="text" cols="50" rows="10">
+        Write your note here...
+    </textarea>
+    <br>
+    <select name="color" id="color" onchange="ColorChange(this)">
+        <option value="red">Red</option>
+        <option value="green">Green</option>
+        <option value="blue">Blue</option>
+        <option value="yellow">Yellow</option>
+    </select>
+    <button class="button" onclick="submit()">Save</button>
+
+
+    
+
+
+</body>
+<script>
+
+    var color = 'red';
+
+    function GetDate(){
+        var d = new Date();
+        var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'June', 'July', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+        return `${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}`;
+    }
+
+    
+
+    function ColorChange(self){
+        color = self.value;
+        console.log(color);
+
+        document.getElementById('text').className = color;        
+    }
+
+    function submit(){
+        var mandatory = ['username', 'title', 'text'];
+        var value = {};
+        mandatory.forEach(function(x, i){
+            var val = document.getElementById(x).value;
+            if(val == '' || val.length == 0){
+                alert('Please enter '+x);
+                return;
+            }
+            
+            value[x] = val;
+        });
+        
+        $.ajax({
+            url: '/api/add_note',
+            method: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({
+                color: color,
+                username: value['username'],
+                title: value['title'],
+                text: value['text'],
+                date: GetDate()
+            }),
+            success: function(result){
+                console.log(result);
+                window.location.href='/Notes.html?username='+value['username'];
+            }
+        });
+
+        /*
+        function(data, status){
+            console.log(data);
+        }
+        */
+
+    }
+
+
+</script>
+
+
+</html>

@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit Note</title>
+    
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    Title:<input type="text" id="title">
+
+    <br>
+    <textarea class="red" name="text" id="text" cols="50" rows="10"></textarea>
+    <br>
+    <select name="color" id="color" onchange="ColorChange(this)">
+        <option value="red">Red</option>
+        <option value="green">Green</option>
+        <option value="blue">Blue</option>
+        <option value="yellow">Yellow</option>
+    </select>
+    <button class="button" onclick="submit()">Save</button>
+
+</body>
+<script>
+    var url = new URL(window.location.href);
+
+    var username = url.searchParams.get('username'); 
+    var note_id = url.searchParams.get('note_id');   
+
+    var title = 'Untitled';
+    var color = 'red';
+
+    $.get('/api/note_id/'+note_id, function(data, status){
+        console.log(data);
+        
+        title = data['title'];
+        color = data['color'];
+
+        document.getElementById('title').value = data['title'];
+        document.getElementById('text').classList = data['color'];
+        document.getElementById('text').value = data['text'];
+
+        document.getElementById('color').value = data['color'];
+    });
+
+
+    function GetDate(){
+        var d = new Date();
+        var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'June', 'July', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+        return `${d.getDay()} ${months[d.getMonth()]} ${d.getFullYear()}`;
+    }
+
+    function ColorChange(self){
+        color = self.value;
+        console.log(color);
+
+        document.getElementById('text').className = color;        
+    }
+
+    function submit(){
+        var mandatory = ['title', 'text'];
+        var value = {};
+        mandatory.forEach(function(x, i){
+            var val = document.getElementById(x).value;
+            if(val == '' || val.length == 0){
+                alert('Please enter '+x);
+                return;
+            }
+            
+            value[x] = val;
+        });
+        
+        $.ajax({
+            url: '/api/update_note',
+            method: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({
+                note_id: note_id,
+                color: color,
+                username: username,
+                title: value['title'],
+                text: value['text'],
+                date: GetDate()
+            }),
+            success: function(result){
+                console.log(result);
+                window.location.href='/Notes.html?username='+username;
+            }
+        });
+    }
+
+
+</script>
+
+
+</html>

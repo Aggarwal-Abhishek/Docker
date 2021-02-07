@@ -1,0 +1,37 @@
+version: '3'
+
+services:
+    db:
+        image: "postgres:13-alpine"
+        env_file:
+            - db.env
+        volumes:
+            - ./db_data/:/var/lib/postgresql/data/
+        networks:
+            - webnotes_network
+
+    api:
+        build: ./api/.
+        env_file:
+            - api.env
+        command: uvicorn API_Server:app --host api --port 80
+        depends_on:
+            - db
+        networks:
+            - webnotes_network
+    
+    server:
+        build: ./server/.
+        volumes:
+            - ./server/html_files/:/usr/share/nginx/html
+        depends_on:
+            - db
+            - api
+        networks:
+            - webnotes_network
+        ports:
+            - 8000:80
+
+networks:
+    webnotes_network:
+        driver: bridge
