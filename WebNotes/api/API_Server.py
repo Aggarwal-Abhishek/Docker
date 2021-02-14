@@ -8,7 +8,10 @@ from fastapi import FastAPI
 app = FastAPI()
 
 db.CreateTable()
-db_cols = ['note_id', 'title', 'date', 'text', 'username', 'color']
+db_cols = [
+    'note_id', 'title', 'date', 
+    'text', 'username', 'color'
+]
 
 @app.get('/')
 def Home():
@@ -17,7 +20,10 @@ def Home():
 @app.get('/notes/{user_name}')
 def Notes(user_name: str):
     notes = db.GetNotes(user_name)
-    ret = [{x:y for (x,y) in zip(db_cols, row)} for row in notes]
+    ret = [
+        {x:y for (x,y) in zip(db_cols, row)}
+        for row in notes
+    ]
     return ret
 
 @app.get('/note_id/{note_id}')
